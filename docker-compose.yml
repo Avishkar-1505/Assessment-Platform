@@ -6,7 +6,7 @@ services:
     ports:
       - "5000:5000"
     env_file: 
-      - .env
+      - ./server/.env
     environment:
       - NODE_ENV=production
       - MONGO_URI=${DATABASE_URL}
@@ -18,7 +18,7 @@ services:
     ports:
       - "3000:3000"
     env_file: 
-      - .env
+      - ./client/.env
 
   mongodb:
     image: mongo:latest
