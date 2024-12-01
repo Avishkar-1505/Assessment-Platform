@@ -1,0 +1,99 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push server Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./server
+          file: ./server/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            ${{ secrets.DOCKER_USERNAME }}/Assessment-Platform:server-latest
+            ${{ secrets.DOCKER_USERNAME }}/Assessment-Platform:server-v${{ github.run_number }}
+
+      - name: Build and push client Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./client
+          file: ./client/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            ${{ secrets.DOCKER_USERNAME }}/Assessment-Platform:client-latest
+            ${{ secrets.DOCKER_USERNAME }}/Assessment-Platform:client-v${{ github.run_number }}
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+
+    # OnlyRun this job on pushes to the main branch
+    if: github.event_name == 'push'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up SSH key
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
+
+      - name: Add EC2 host key to known hosts
+        run: echo "${{ secrets.EC2_KNOWN_HOSTS }}" >> ~/.ssh/known_hosts
+
+      - name: Deploy to AWS EC2
+        run: |
+          echo "Deploying to AWS EC2"
+          ssh ubuntu@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
+
+            # Starting directory
+            cd /home/ubuntu
+
+            # Check if the application directory exists, clone if it doesn't
+            if [ ! -d "/home/ubuntu/Assessment-Platform" ]; then
+                git clone https://github.com/Avishkar-1505/Assessment-Platform.git
+            fi
+            
+            # Navigate to the application directory
+            cd /home/ubuntu/Assessment-Platform
+
+            # Fetch the latest code from the repository
+            git pull origin main
+
+            # Login to dockerhub account
+            echo "$DOCKER_PASSWORD" | docker login -u $DOCKER_USERNAME --password-stdin
+
+            # Pull the latest Docker images
+            docker-compose pull
+            
+            # Stop and remove existing containers
+            docker-compose down || true
+            
+            # Run the new containers
+            docker-compose up -d
+          EOF
