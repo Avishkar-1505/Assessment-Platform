@@ -4,7 +4,7 @@ services:
   backend:
     image: ${DOCKER_USERNAME}/assessment-platform:server-latest  # Use the image from Docker Hub
     ports:
-      - "${PORT}:5000"
+      - "5000:5000"
     env_file: 
       - .env
     environment:
