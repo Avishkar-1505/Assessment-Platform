@@ -33,8 +33,8 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
-            ${{ secrets.DOCKER_USERNAME }}/Assessment-Platform:server-latest
-            ${{ secrets.DOCKER_USERNAME }}/Assessment-Platform:server-v${{ github.run_number }}
+            ${{ secrets.DOCKER_USERNAME }}/assessment-platform:server-latest
+            ${{ secrets.DOCKER_USERNAME }}/assessment-platform:server-v${{ github.run_number }}
 
       - name: Build and push client Docker image
         uses: docker/build-push-action@v5
@@ -44,8 +44,8 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
-            ${{ secrets.DOCKER_USERNAME }}/Assessment-Platform:client-latest
-            ${{ secrets.DOCKER_USERNAME }}/Assessment-Platform:client-v${{ github.run_number }}
+            ${{ secrets.DOCKER_USERNAME }}/assessment-platform:client-latest
+            ${{ secrets.DOCKER_USERNAME }}/assessment-platform:client-v${{ github.run_number }}
 
   deploy:
     runs-on: ubuntu-latest
