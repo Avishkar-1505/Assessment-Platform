@@ -14,7 +14,7 @@ RUN npm install
 COPY . .
 
 # Expose the application port using an environment variable
-EXPOSE ${PORT}
+EXPOSE 5000
 
 # Start the application and pass in the environment variables from .env
 CMD ["node", "app.js"]
