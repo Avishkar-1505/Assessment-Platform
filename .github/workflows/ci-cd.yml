@@ -70,6 +70,8 @@ jobs:
         run: |
           echo "Deploying to AWS EC2"
           ssh ubuntu@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
+            export DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
+            export DOCKER_PASSWORD=${{ secrets.DOCKER_PASSWORD }}
 
             # Starting directory
             cd /home/ubuntu

@@ -43,7 +43,7 @@ const TestDetails = () => {
             <p className="text-lg uppercase font-bold">All Tests</p>
         </CardHeader>
         <CardBody className="overflow-visible py-2 gap-y-5">
-            {createdTests.slice(0, 3).map((test) => (
+            {createdTests.map((test) => (
             <Card key={test._id} className="bg-richblack-50">
                 <CardBody className="mt-2 w-full">
                     <p className="text-lg font-medium text-black">

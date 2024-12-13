@@ -1,7 +1,7 @@
 # frontend/Dockerfile
 
 # Use the official Node.js image
-FROM node:14 as build
+FROM node:18 as build
 
 # Set the working directory
 WORKDIR /app

@@ -8,7 +8,6 @@ const studentSchema = new mongoose.Schema({
     email: {
         type: String,
         required: true,
-        unique: true
     },
     testId: {
         type: mongoose.Schema.Types.ObjectId,
