@@ -39,6 +39,13 @@ app.use("/api/v1/instructor", instructorRoutes);
 app.use("/api/v1/test", testRoutes);
 app.use("/api/v1/student",studentRoutes);
 
+app.get("/", (req, res) => {
+    return res.json({
+        success: true,
+        message: "Your server is up and running"
+    })
+})
+
 const server = app.listen(port, ()=>{
     console.log(`Server is running at http://localhost:${port}`);
 })
