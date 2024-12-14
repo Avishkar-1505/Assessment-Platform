@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 5000
 
 # Start the application and pass in the environment variables from .env
-CMD ["node", "app.js"]
+CMD ["node", "index.js"]
