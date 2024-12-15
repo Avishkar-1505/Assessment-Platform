@@ -10,8 +10,6 @@ services:
     environment:
       - NODE_ENV=production
       - MONGO_URI=${DATABASE_URL}
-    depends_on:
-      - mongodb
 
   frontend:
     image: ${DOCKER_USERNAME}/assessment-platform:client-latest  # Use the image from Docker Hub
